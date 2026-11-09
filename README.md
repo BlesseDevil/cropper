@@ -12,6 +12,8 @@ Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/li
 A free image cropper that runs entirely in your browser. Crop to any shape (circle, ellipse, square,
 rounded rectangle, pill or arbitrary rectangle) and export to PNG, WebP, JPEG, ICO or SVG at any resolution.
 
+By [Mehedi Maruf (BlesseDevil)](https://mehedimaruf.com) &middot; [project page](https://mehedimaruf.com/projects/slicedevil)
+
 **Live:** <https://crop.mehedimaruf.com> &middot; **Source:** <https://github.com/BlesseDevil/cropper> &middot; installable as an app (PWA) &middot; works offline after the first load.
 
 Nothing you open is ever uploaded. After the first load the app needs no network, and there is nothing to install
@@ -36,7 +38,7 @@ site/                        the website, served as-is (no build step)
   index.html  manifest.webmanifest  sw.js  CNAME
   css/    portal.css (launch splash)  app.css
   js/     app.js  encoders.js  portal.js  pwa.js  boot.js
-  assets/ the BlessedDevil mark          icons/  PWA and favicon icons
+  assets/ the BlesseDevil mark          icons/  PWA and favicon icons
 releases/                    single-file build output (generated, gitignored)
 tools/
   build_single.py            builds releases/ from site/
@@ -265,8 +267,8 @@ A few decisions matter more than they look:
 
 ## Licence and credits
 
-&copy; 2026 BlessedDevil | Mehedi Maruf. Code: GNU AGPL-3.0-or-later (see [LICENSE](LICENSE)) with attribution terms in
-[NOTICE](NOTICE). The BlessedDevil mark and icons are **not** AGPL; see [LICENSE-ASSETS.md](LICENSE-ASSETS.md).
+&copy; 2026 BlesseDevil | Mehedi Maruf. Code: GNU AGPL-3.0-or-later (see [LICENSE](LICENSE)) with attribution terms in
+[NOTICE](NOTICE). The BlesseDevil mark and icons are **not** AGPL; see [LICENSE-ASSETS.md](LICENSE-ASSETS.md).
 
 Licence contact: license@mehedimaruf.com
 

@@ -6,7 +6,7 @@
 // and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
 // Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
 "use strict";
-// Portal splash runner (web adaptation of the Blessedevil portal kit). No dependencies.
+// Portal splash runner (web adaptation of the BlesseDevil portal kit). No dependencies.
 //
 //   Portal.run([{ label, lines: [..narration..], run: async () => "short detail" }, ...],
 //              { onDone, onTileClick, pace, quick });

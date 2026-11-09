@@ -8,7 +8,7 @@ and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
 Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
 The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) and are not covered by the AGPL.
 
-Web adaptation of the Blessedevil portal splash kit.
+Web adaptation of the BlesseDevil portal splash kit.
 The original is built for a transparent, frameless desktop window (no backdrop at all). In a browser there is no
 transparent window, so this version adds a full-viewport splash surface and a selectable backdrop disc behind the swirl.
 Theme follows the app: it keys off <html data-theme="system|light|dark"> exactly like app.css does.

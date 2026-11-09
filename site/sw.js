@@ -11,7 +11,7 @@
 // CACHE must carry the app version. tools/build_single.py refuses to build if it does not match APP_VERSION in
 // js/app.js, so a version bump cannot forget it. A new cache name means a fresh precache; old caches are deleted
 // on activate.
-const CACHE = "slicedevil-v0.3.0";
+const CACHE = "slicedevil-v0.3.1";
 
 const PRECACHE = [
   "./", "index.html", "manifest.webmanifest",

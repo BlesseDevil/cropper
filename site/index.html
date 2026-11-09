@@ -14,6 +14,8 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>SliceDevil</title>
+<meta name="author" content="Mehedi Maruf">
+<link rel="canonical" href="https://crop.mehedimaruf.com/">
 <meta name="description" content="Crop any image to any shape and export PNG, WebP, JPEG, ICO or SVG. Runs entirely in your browser; nothing is uploaded.">
 <meta name="theme-color" content="#f6efe3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d0609" media="(prefers-color-scheme: dark)">
@@ -29,7 +31,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
 </head>
 <body>
 
-<!-- Launch splash: the Blessedevil portal. Aura backdrop, crimson mark in both themes (see css/portal.css). -->
+<!-- Launch splash: the BlesseDevil portal. Aura backdrop, crimson mark in both themes (see css/portal.css). -->
 <main id="splash" data-backdrop="aura" role="status" aria-live="polite">
   <div class="disc" aria-hidden="true">
     <div class="orb">
@@ -42,7 +44,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
     <button class="tile" id="tile" type="button" aria-label="Change theme"><img src="assets/mark-light.png" alt="" width="346" height="340"></button>
   </div>
   <h1 class="name">SliceDevil</h1>
-  <p class="sub">by BlessedDevil</p>
+  <p class="sub">by BlesseDevil</p>
   <div class="trail" id="trail" aria-hidden="true"></div>
   <div class="now"><span id="step">Starting&hellip;</span><span id="pct">0%</span></div>
   <div class="bar"><i id="fill"></i></div>
@@ -81,7 +83,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
             <circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/>
             <path d="M8 7.2v4M8 5.1v.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <span><b>About Mehedi Maruf</b><small>BlessedDevil</small></span>
+          <span><b>About Mehedi Maruf</b><small>BlesseDevil</small></span>
         </a>
         <a class="brand-item" role="menuitem" data-link="contact">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -459,6 +461,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
     <img class="foot-mark" id="foot-mark" alt="" width="16" height="16" />
   </a>
   <span class="status-line" id="status-line" role="status" aria-live="polite">Drop, paste or choose an image to begin</span>
+  <a class="foot-by" href="https://mehedimaruf.com" target="_blank" rel="noopener noreferrer">by Mehedi Maruf (BlesseDevil)</a>
   <span class="help-wrap">
     <button id="help-btn" type="button" aria-haspopup="dialog" aria-expanded="false" title="How to use SliceDevil">How to use</button>
     <div class="credit-pop help-pop" id="help-pop" role="dialog" aria-label="How to use SliceDevil" hidden>
@@ -490,10 +493,11 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
     <button id="credit-btn" type="button" aria-haspopup="dialog" aria-expanded="false" title="Credits and contact">Credits</button>
     <div class="credit-pop" id="credit-pop" role="dialog" aria-label="Credits and contact" hidden>
       <p class="credit-title">SliceDevil <span id="credit-version"></span></p>
-      <p><b>SliceDevil by Mehedi Maruf (BlessedDevil)</b></p>
+      <p><b><a href="https://mehedimaruf.com" target="_blank" rel="noopener noreferrer">SliceDevil by Mehedi Maruf (BlesseDevil)</a></b></p>
       <p class="credit-links">
         <a id="credit-site" target="_blank" rel="noopener noreferrer">mehedimaruf.com</a>
         <a id="credit-mail"></a>
+        <a href="https://mehedimaruf.com/projects/slicedevil" target="_blank" rel="noopener noreferrer">SliceDevil project page</a>
         <a id="credit-source" target="_blank" rel="noopener noreferrer">Source code (AGPL-3.0)</a>
       </p>
       <p class="credit-joke">Can't reach slicedevil@mehedimaruf.com?<br>
@@ -501,7 +505,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
         Please don't take it personally. Try <a href="mailto:mehedimaruf@duck.com">mehedimaruf@duck.com</a>
         or <a href="mailto:blessedevil@duck.com">blessedevil@duck.com</a> instead,
         and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')</p>
-      <p class="credit-fine">Code: AGPL-3.0-or-later. The BlessedDevil mark is &copy; Mehedi Maruf, all rights reserved.</p>
+      <p class="credit-fine">Code: AGPL-3.0-or-later. The BlesseDevil mark is &copy; Mehedi Maruf, all rights reserved.</p>
     </div>
   </span>
 </footer>

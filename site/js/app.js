@@ -20,7 +20,7 @@ const docks   = $("docks");
 const zoombar = $("zoombar");
 const emptyEl = $("empty");
 
-const APP_VERSION = "v0.3.0";
+const APP_VERSION = "v0.3.1";
 
 /* ---------------------------------------------------------------------------
    BRAND LINKS — fill these in to activate the brand menu items. Left empty,
@@ -37,7 +37,7 @@ const BRAND_LINKS = {
    with a real pointer. Touch has no "hover away", so those devices get the
    click/tap path instead and never a peek. */
 const canHover = matchMedia("(hover: hover) and (pointer: fine)");
-/* The BlessedDevil mark, served from assets/ (the single-file build inlines
+/* The BlesseDevil mark, served from assets/ (the single-file build inlines
    these as data URIs). Two crops: the "dark" variant reads on dark surfaces, "light" on
    light ones — swapped to match the resolved theme, not the raw setting. */
 const BRAND_URI = {
@@ -171,7 +171,7 @@ prefersDark.addEventListener("change", () => {
 });
 
 $("brand-credit").innerHTML =
-  APP_VERSION + " <i>&middot;</i> &copy; BlessedDevil <i>|</i> Mehedi Maruf";
+  APP_VERSION + " <i>&middot;</i> &copy; BlesseDevil <i>|</i> Mehedi Maruf";
 document.title = "SliceDevil " + APP_VERSION;
 
 /* ============================================================================
