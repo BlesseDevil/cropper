@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!--
+SPDX-License-Identifier: AGPL-3.0-or-later
+Copyright (C) 2026 Mehedi Maruf. Licence contact: license@mehedimaruf.com
+Can't reach license@mehedimaruf.com?
+The domain probably expired because HE's TOO BROKE TO RENEW IT.
+Please don't take it personally. Try blessedevil@duck.com or mehedimaruf@duck.com instead,
+and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
+Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
+The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) and are not covered by the AGPL.
+-->
+<html lang="en" data-theme="system">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SliceDevil</title>
+<meta name="description" content="Crop any image to any shape and export PNG, WebP, JPEG, ICO or SVG. Runs entirely in your browser; nothing is uploaded.">
+<meta name="theme-color" content="#f6efe3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0609" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SliceDevil">
+<link rel="stylesheet" href="css/portal.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- Launch splash: the Blessedevil portal. Aura backdrop, crimson mark in both themes (see css/portal.css). -->
+<main id="splash" data-backdrop="aura" role="status" aria-live="polite">
+  <div class="disc" aria-hidden="true">
+    <div class="orb">
+      <span style="--x:-53%;--y:-53%;--spin:5.55s;--ink:var(--portal-ink-1);--r:90% 95% 85% 105%"></span>
+      <span style="--x:-47%;--y:-52%;--spin:8.7s;--ink:var(--portal-ink-2);--r:105% 82% 98% 88%"></span>
+      <span style="--x:-45%;--y:-50%;--spin:6.9s;--size:58%;--ink:var(--portal-core);--r:86% 108% 92% 96%"></span>
+      <span style="--x:-53%;--y:-45%;--spin:10.8s;--ink:var(--portal-ink-3);--r:98% 88% 106% 84%"></span>
+      <span style="--x:-55%;--y:-45%;--spin:9.3s;--ink:var(--portal-ink-2);--r:92% 100% 82% 110%"></span>
+    </div>
+    <button class="tile" id="tile" type="button" aria-label="Change theme"><img src="assets/mark-light.png" alt="" width="346" height="340"></button>
+  </div>
+  <h1 class="name">SliceDevil</h1>
+  <p class="sub">by BlessedDevil</p>
+  <div class="trail" id="trail" aria-hidden="true"></div>
+  <div class="now"><span id="step">Starting&hellip;</span><span id="pct">0%</span></div>
+  <div class="bar"><i id="fill"></i></div>
+  <p class="legal">&copy; 2026 Mehedi Maruf<br>Licensed AGPL-3.0-or-later</p>
+  <button class="skip" id="skip" type="button">Skip</button>
+</main>
+<noscript><p style="padding:2rem;font:16px system-ui">SliceDevil needs JavaScript to crop images in your browser.</p></noscript>
+
+<canvas id="stage"></canvas>
+<div class="drop-veil"></div>
+
+<!-- ------------------------------------------------------------------ top -->
+<header class="topbar">
+  <div class="brand" id="brand">
+    <button class="logo-btn" id="theme-btn" type="button" data-mode="system" title="Theme: system" aria-label="Theme: system">
+      <span class="logo-stack">
+        <img class="brand-mark" id="brand-mark" alt="" width="28" height="28" />
+      </span>
+      <span class="theme-badge" id="theme-icon" aria-hidden="true"></span>
+    </button>
+    <div class="brand-id">
+      <button class="brand-btn" id="brand-btn" aria-haspopup="menu" aria-expanded="false">
+        <span class="brand-name">SliceDevil</span>
+        <svg class="brand-chev" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      </button>
+      <a class="brand-credit" id="brand-credit" href="https://mehedimaruf.com" target="_blank" rel="noopener noreferrer"
+         title="mehedimaruf.com">&mdash;</a>
+    </div>
+    <div class="brand-menu" id="brand-menu" role="menu" aria-labelledby="brand-btn" hidden>
+      <div class="brand-menu-inner">
+        <a class="brand-item" role="menuitem" data-link="about">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M8 7.2v4M8 5.1v.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span><b>About Mehedi Maruf</b><small>BlessedDevil</small></span>
+        </a>
+        <a class="brand-item" role="menuitem" data-link="contact">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="1.9" y="3.4" width="12.2" height="9.2" rx="1.6" stroke="currentColor" stroke-width="1.4"/>
+            <path d="m2.4 4.4 5.6 4 5.6-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <span><b>Contact me</b></span>
+        </a>
+        <a class="brand-item" role="menuitem" data-link="donate">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 13.2S2.4 9.9 2.4 6.4A2.9 2.9 0 0 1 8 5.2a2.9 2.9 0 0 1 5.6 1.2c0 3.5-5.6 6.8-5.6 6.8Z"
+                  stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+          <span><b>Donate</b></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn ghost" id="reset-layout" title="Return the panels to their default places" hidden>
+    Reset layout
+  </button>
+  <button class="btn" id="install-btn" title="Install SliceDevil as an app" hidden>
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 2.5v7m0 0L5 6.5m3 3 3-3M3 12.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Install
+  </button>
+  <div class="govt-wrap" id="govt-wrap" hidden>
+    <button class="btn govt-btn" id="govt-btn" type="button" aria-haspopup="menu" aria-expanded="false"
+            title="Crop for a government application form">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <rect x="1.8" y="3" width="12.4" height="10" rx="1.8" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="5.6" cy="7.2" r="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M3.6 11c.4-1.2 1.2-1.7 2-1.7s1.6.5 2 1.7M9.4 6.6h3M9.4 9h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span class="lbl">Govt. form</span>
+    </button>
+    <div class="govt-menu" id="govt-menu" role="menu" aria-label="Government form presets" hidden>
+      <button type="button" role="menuitem" data-govt="photo">
+        <b>Photo</b>
+        <span>300 &times; 300 px &middot; JPG<br>max 100 KB &middot; aims for 50&ndash;90 KB</span>
+      </button>
+      <button type="button" role="menuitem" data-govt="signature">
+        <b>Signature</b>
+        <span>300 &times; 80 px &middot; JPG<br>max 60 KB &middot; aims for 20&ndash;50 KB</span>
+      </button>
+    </div>
+  </div>
+
+  <button class="btn" id="open-btn">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 11V3m0 0L5 6m3-3 3 3M2.5 10.5v1A2.5 2.5 0 0 0 5 14h6a2.5 2.5 0 0 0 2.5-2.5v-1"
+            stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Open
+  </button>
+  <button class="btn primary" id="export-btn" disabled aria-haspopup="true" aria-expanded="false">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 2.5v8m0 0L4.75 7.25M8 10.5l3.25-3.25M2.5 11.5v1A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5v-1"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span id="export-label">Export</span>
+  </button>
+  <input type="file" id="file" accept="image/*" class="sr" />
+</header>
+
+<!-- --------------------------------------------------------------- empty -->
+<div class="empty-state" id="empty">
+  <div class="ring" id="empty-ring" role="button" tabindex="0" aria-label="Choose an image" title="Click to choose an image">
+    <span class="ring-spin" aria-hidden="true"></span>
+    <span class="ring-comet" aria-hidden="true"></span>
+    <span class="ring-core" aria-hidden="true">
+      <svg class="ring-tray" viewBox="0 0 24 24" fill="none"><path d="M4 15.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <svg class="ring-arrow" viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <img class="ring-logo" alt="" width="346" height="340" />
+    </span>
+  </div>
+  <h1>Drop an image to begin</h1>
+  <p>Everything runs locally &mdash; nothing is uploaded. Paste with <kbd>Ctrl</kbd>+<kbd>V</kbd> too.</p>
+  <button class="btn primary" id="open-btn-2">Choose an image</button>
+</div>
+
+<!-- ---------------------------------------------------------------- zoom -->
+<div class="zoombar" id="zoombar" hidden>
+  <button id="zoom-out" title="Zoom out (−)" aria-label="Zoom out">&minus;</button>
+  <button class="level" id="zoom-level" title="Reset to 100% (0)">100%</button>
+  <button id="zoom-in" title="Zoom in (+)" aria-label="Zoom in">+</button>
+  <span class="sep"></span>
+  <button id="fit-btn" title="Fit image to screen (F)">Fit</button>
+  <button id="fill-btn" title="Fill the crop box (C)">Fill</button>
+</div>
+
+<!-- ---------------------------------------------------------------- docks -->
+<div id="docks" hidden>
+
+  <!-- ============ Shape ============ -->
+  <section class="dock" id="dock-shape" data-open="1">
+    <header class="dock-head">
+      <svg class="grip" width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true">
+        <circle cx="2" cy="2" r="1.2"/><circle cx="8" cy="2" r="1.2"/>
+        <circle cx="2" cy="7" r="1.2"/><circle cx="8" cy="7" r="1.2"/>
+        <circle cx="2" cy="12" r="1.2"/><circle cx="8" cy="12" r="1.2"/>
+      </svg>
+      <h3>Shape</h3>
+      <span class="readout" id="source-readout">&mdash;</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </header>
+    <div class="dock-body">
+      <div class="seg" id="shape-seg" role="group" aria-label="Crop shape">
+        <button data-shape="rect" aria-pressed="true">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <rect x="1.5" y="1.5" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>Rectangle</button>
+        <button data-shape="ellipse" aria-pressed="false">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>Ellipse</button>
+      </div>
+      <div class="field" id="round-field">
+        <label class="field-label" for="round">Corner radius <b id="round-val">0%</b></label>
+        <input type="range" class="slider" id="round" min="0" max="100" step="1" value="0" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Aspect ratio ============ -->
+  <section class="dock" id="dock-ratio" data-open="1">
+    <header class="dock-head">
+      <svg class="grip" width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true">
+        <circle cx="2" cy="2" r="1.2"/><circle cx="8" cy="2" r="1.2"/>
+        <circle cx="2" cy="7" r="1.2"/><circle cx="8" cy="7" r="1.2"/>
+        <circle cx="2" cy="12" r="1.2"/><circle cx="8" cy="12" r="1.2"/>
+      </svg>
+      <h3>Aspect ratio</h3>
+      <span class="readout" id="ratio-readout">1 : 1</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </header>
+    <div class="dock-body">
+      <div class="seg wrap" id="ratio-seg" role="group" aria-label="Aspect ratio">
+        <button data-ratio="1:1"  aria-pressed="true">1:1</button>
+        <button data-ratio="4:3"  aria-pressed="false">4:3</button>
+        <button data-ratio="3:2"  aria-pressed="false">3:2</button>
+        <button data-ratio="16:9" aria-pressed="false">16:9</button>
+        <button data-ratio="custom" aria-pressed="false">Custom</button>
+        <button data-ratio="free"   aria-pressed="false">Free</button>
+      </div>
+      <div class="dim-pair" id="ratio-custom" style="margin-top:9px" hidden>
+        <div><label class="cap" for="ratio-w">Width</label>
+             <input type="number" class="num" id="ratio-w" min="1" max="999" step="1" value="1" /></div>
+        <div style="align-self:end;padding-bottom:0"><span class="cap">&nbsp;</span>
+             <div style="height:38px;display:grid;place-items:center;color:var(--text-faint)">:</div></div>
+        <div><label class="cap" for="ratio-h">Height</label>
+             <input type="number" class="num" id="ratio-h" min="1" max="999" step="1" value="1" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Frame ============ -->
+  <section class="dock" id="dock-frame" data-open="0">
+    <header class="dock-head">
+      <svg class="grip" width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true">
+        <circle cx="2" cy="2" r="1.2"/><circle cx="8" cy="2" r="1.2"/>
+        <circle cx="2" cy="7" r="1.2"/><circle cx="8" cy="7" r="1.2"/>
+        <circle cx="2" cy="12" r="1.2"/><circle cx="8" cy="12" r="1.2"/>
+      </svg>
+      <h3>Frame</h3>
+      <span class="readout" id="frame-readout">Centred</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </header>
+    <div class="dock-body">
+      <div class="seg" id="lock-seg" role="group" aria-label="Crop box position">
+        <button data-lock="1" aria-pressed="true">Centred</button>
+        <button data-lock="0" aria-pressed="false">Free drag</button>
+      </div>
+      <div class="field" id="size-field">
+        <label class="field-label" for="size">Size <b id="size-val">70%</b></label>
+        <input type="range" class="slider" id="size" min="10" max="100" step="0.5" value="70" />
+      </div>
+      <p class="hint" id="frame-hint">The box stays centred &mdash; pan and zoom the image behind it.</p>
+    </div>
+  </section>
+
+  <!-- ============ Rotate ============ -->
+  <section class="dock" id="dock-rotate" data-open="0">
+    <header class="dock-head">
+      <svg class="grip" width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true">
+        <circle cx="2" cy="2" r="1.2"/><circle cx="8" cy="2" r="1.2"/>
+        <circle cx="2" cy="7" r="1.2"/><circle cx="8" cy="7" r="1.2"/>
+        <circle cx="2" cy="12" r="1.2"/><circle cx="8" cy="12" r="1.2"/>
+      </svg>
+      <h3>Rotate</h3>
+      <span class="readout" id="rot-readout">level</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </header>
+    <div class="dock-body">
+      <div class="seg" id="rot-target" role="group" aria-label="What to rotate">
+        <button data-rot="photo" aria-pressed="true">Photo</button>
+        <button data-rot="box" aria-pressed="false">Box</button>
+      </div>
+      <div class="field">
+        <label class="field-label" for="rot">Angle <b id="rot-val">0&deg;</b></label>
+        <input type="range" class="slider" id="rot" min="-180" max="180" step="0.1" value="0" />
+      </div>
+      <div class="seg" role="group" aria-label="Quick rotation">
+        <button id="rot-ccw" type="button" title="Turn 90&deg; anticlockwise">&#8634; 90&deg;</button>
+        <button id="rot-cw" type="button" title="Turn 90&deg; clockwise">&#8635; 90&deg;</button>
+        <button id="rot-reset" type="button" title="Back to level">Reset</button>
+      </div>
+      <p class="hint" id="rot-hint"></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ------------------------------------------------------ export popover -->
+<!-- Opened by the top-bar Export button. Holds resolution + format settings
+     and the actual save action, so the always-visible top bar stays to a
+     single button rather than a permanent settings card. -->
+<div class="export-pop" id="export-pop" hidden>
+  <header class="pop-head">
+    <h3>Export</h3>
+    <button class="btn icon ghost" id="export-close" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="pop-body">
+  <div class="notice govt-note" id="govt-note" hidden>
+    <p><b id="govt-title"></b> <span id="govt-detail"></span></p>
+    <p class="govt-result" id="govt-result"></p>
+    <button class="btn ghost" id="govt-clear" type="button">Clear preset</button>
+  </div>
+  <!-- ============ Export resolution ============ -->
+  <section class="dock flat" id="dock-res" data-open="1">
+    <header class="dock-head">
+      <h3>Resolution</h3>
+      <span class="readout" id="out-readout">&mdash;</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </header>
+    <div class="dock-body">
+      <div class="seg wrap" id="size-seg" role="group" aria-label="Output size">
+        <button data-size="native" aria-pressed="true">Native</button>
+        <button data-size="2048" aria-pressed="false">2048</button>
+        <button data-size="1024" aria-pressed="false">1024</button>
+        <button data-size="512"  aria-pressed="false">512</button>
+        <button data-size="256"  aria-pressed="false">256</button>
+        <button data-size="custom" aria-pressed="false">Custom</button>
+      </div>
+
+      <div id="custom-res" style="margin-top:12px" hidden>
+        <div class="dim-pair">
+          <div>
+            <label class="cap" for="res-w">Horizontal</label>
+            <input type="number" class="num" id="res-w" min="1" max="8192" step="1" value="1024" />
+          </div>
+          <button class="link-btn" id="res-lock" aria-pressed="true"
+                  title="Lock to the crop's aspect ratio" aria-label="Lock aspect ratio">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6.5 9.5a2.5 2.5 0 0 0 3.6.1l2-2a2.5 2.5 0 0 0-3.5-3.6l-.6.6"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M9.5 6.5a2.5 2.5 0 0 0-3.6-.1l-2 2a2.5 2.5 0 0 0 3.5 3.6l.6-.6"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div>
+            <label class="cap" for="res-h">Vertical</label>
+            <input type="number" class="num" id="res-h" min="1" max="8192" step="1" value="1024" />
+          </div>
+        </div>
+
+        <!-- Shown only when the ratio is unlocked AND the typed size does not
+             match the crop's shape. Export is blocked until a mode is chosen. -->
+        <div class="notice" id="fit-notice" hidden>
+          <p id="fit-msg"></p>
+          <div class="seg" id="fit-seg" role="group" aria-label="Ratio mismatch handling">
+            <button data-fit="stretch" aria-pressed="false">Stretch</button>
+            <button data-fit="cover"   aria-pressed="false">Crop overflow</button>
+            <button data-fit="relock"  aria-pressed="false">Match ratio</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="hint" id="size-hint">Exports at the true source resolution inside the box.</p>
+    </div>
+  </section>
+
+  <!-- ============ Format & settings ============ -->
+  <section class="dock flat" id="dock-format" data-open="1">
+    <header class="dock-head">
+      <h3>Format</h3>
+      <span class="readout" id="format-readout">PNG</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </header>
+    <div class="dock-body">
+      <div class="select" id="format-select">
+        <button class="select-btn" id="format-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span class="tag" id="format-tag">PNG</span>
+          <span class="txt"><span id="format-name">PNG</span><small id="format-desc">Lossless, transparent edges</small></span>
+          <svg class="caret" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <ul class="select-list" id="format-list" role="listbox" aria-label="Export format" hidden></ul>
+      </div>
+
+      <div class="field" id="quality-field" hidden>
+        <label class="field-label" for="quality">Quality <b id="quality-val">90</b></label>
+        <input type="range" class="slider" id="quality" min="30" max="100" step="1" value="90" />
+      </div>
+
+      <div class="field" id="bg-field" hidden>
+        <div class="field-label"><span>Background</span></div>
+        <div class="swatches" id="bg-swatches">
+          <button class="swatch" data-color="#ffffff" style="background:#fff" aria-pressed="true"  title="White"></button>
+          <button class="swatch" data-color="#000000" style="background:#000" aria-pressed="false" title="Black"></button>
+          <button class="swatch" data-color="#8a909e" style="background:#8a909e" aria-pressed="false" title="Grey"></button>
+          <span class="swatch custom" title="Custom colour">
+            <input type="color" id="bg-custom" value="#4f46e5" />
+          </span>
+        </div>
+        <p class="hint">This format has no transparency, so the area outside the shape is filled.</p>
+      </div>
+
+      <div class="field" id="ico-field" hidden>
+        <div class="field-label"><span>Icon sizes</span></div>
+        <div class="chips" id="ico-chips"></div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <footer class="pop-foot">
+    <div class="field" id="filename-field" style="margin-top:0">
+      <label class="field-label" for="filename-input">File name
+        <b id="filename-ext-readout">.png</b></label>
+      <input type="text" class="num" id="filename-input"
+             style="text-align:left" autocomplete="off" spellcheck="false" />
+    </div>
+    <button class="btn primary block" id="export-confirm">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 2.5v8m0 0L4.75 7.25M8 10.5l3.25-3.25M2.5 11.5v1A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5v-1"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span id="export-confirm-label">Export PNG</span>
+    </button>
+    <p class="hint" id="save-hint">Cropped from the original pixels, never from the preview.</p>
+  </footer>
+</div>
+
+<!-- ---------------------------------------------------------------- footer -->
+<footer class="statusbar" id="statusbar" data-level="info">
+  <a class="foot-logo" id="foot-logo" href="https://mehedimaruf.com" target="_blank" rel="noopener noreferrer" title="mehedimaruf.com" aria-label="mehedimaruf.com">
+    <img class="foot-mark" id="foot-mark" alt="" width="16" height="16" />
+  </a>
+  <span class="status-line" id="status-line" role="status" aria-live="polite">Drop, paste or choose an image to begin</span>
+  <span class="help-wrap">
+    <button id="help-btn" type="button" aria-haspopup="dialog" aria-expanded="false" title="How to use SliceDevil">How to use</button>
+    <div class="credit-pop help-pop" id="help-pop" role="dialog" aria-label="How to use SliceDevil" hidden>
+      <p class="credit-title">How to use SliceDevil</p>
+      <ol class="help-steps">
+        <li><b>Load a photo.</b> Drop it anywhere, paste with Ctrl+V, click the circle, or press Open.</li>
+        <li><b>Shape the crop.</b> Choose Rectangle or Ellipse, a ratio, and Centred or Free drag. Pan and zoom the photo behind the box.</li>
+        <li><b>Straighten it.</b> Open Rotate and turn the photo or the box, one at a time. Keys: [ and ].</li>
+        <li><b>For a government form?</b> Once a photo is loaded, press Govt. form, then Photo (300&times;300, up to 100&nbsp;KB) or Signature (300&times;80, up to 60&nbsp;KB). Export tunes the JPEG size for you.</li>
+        <li><b>Export.</b> Pick a size and format, then Export. Nothing leaves your device.</li>
+      </ol>
+      <div class="keys">
+        <p class="keys-title">Shortcuts</p>
+        <dl class="keys-grid">
+          <div class="key-row"><dt><kbd>F</kbd></dt><dd>Fit photo</dd></div>
+          <div class="key-row"><dt><kbd>C</kbd></dt><dd>Fill the box</dd></div>
+          <div class="key-row"><dt><kbd>0</kbd></dt><dd>Zoom to 100%</dd></div>
+          <div class="key-row"><dt><kbd>+</kbd><kbd>&minus;</kbd></dt><dd>Zoom in / out</dd></div>
+          <div class="key-row"><dt><kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&rarr;</kbd><kbd>&darr;</kbd></dt><dd>Nudge photo</dd></div>
+          <div class="key-row"><dt><kbd>Space</kbd></dt><dd>Hold + drag to pan</dd></div>
+          <div class="key-row"><dt><kbd>[</kbd><kbd>]</kbd></dt><dd>Rotate 1&deg; (Shift 5&deg;)</dd></div>
+          <div class="key-row"><dt><kbd>Ctrl</kbd><kbd>V</kbd></dt><dd>Paste image</dd></div>
+          <div class="key-row"><dt><kbd>Esc</kbd></dt><dd>Close a card</dd></div>
+        </dl>
+      </div>
+    </div>
+  </span>
+  <span class="credit-wrap">
+    <button id="credit-btn" type="button" aria-haspopup="dialog" aria-expanded="false" title="Credits and contact">Credits</button>
+    <div class="credit-pop" id="credit-pop" role="dialog" aria-label="Credits and contact" hidden>
+      <p class="credit-title">SliceDevil <span id="credit-version"></span></p>
+      <p><b>SliceDevil by Mehedi Maruf (BlessedDevil)</b></p>
+      <p class="credit-links">
+        <a id="credit-site" target="_blank" rel="noopener noreferrer">mehedimaruf.com</a>
+        <a id="credit-mail"></a>
+        <a id="credit-source" target="_blank" rel="noopener noreferrer">Source code (AGPL-3.0)</a>
+      </p>
+      <p class="credit-joke">Can't reach slicedevil@mehedimaruf.com?<br>
+        The domain probably expired because HE's TOO BROKE TO RENEW IT.<br>
+        Please don't take it personally. Try <a href="mailto:mehedimaruf@duck.com">mehedimaruf@duck.com</a>
+        or <a href="mailto:blessedevil@duck.com">blessedevil@duck.com</a> instead,
+        and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')</p>
+      <p class="credit-fine">Code: AGPL-3.0-or-later. The BlessedDevil mark is &copy; Mehedi Maruf, all rights reserved.</p>
+    </div>
+  </span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/encoders.js"></script>
+
+<script src="js/app.js"></script>
+<script src="js/portal.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/boot.js"></script>
+</body>
+</html>

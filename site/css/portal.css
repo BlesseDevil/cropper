@@ -1,0 +1,162 @@
+/*
+SPDX-License-Identifier: AGPL-3.0-or-later
+Copyright (C) 2026 Mehedi Maruf. Licence contact: license@mehedimaruf.com
+Can't reach license@mehedimaruf.com?
+The domain probably expired because HE's TOO BROKE TO RENEW IT.
+Please don't take it personally. Try blessedevil@duck.com or mehedimaruf@duck.com instead,
+and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
+Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
+The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) and are not covered by the AGPL.
+
+Web adaptation of the Blessedevil portal splash kit.
+The original is built for a transparent, frameless desktop window (no backdrop at all). In a browser there is no
+transparent window, so this version adds a full-viewport splash surface and a selectable backdrop disc behind the swirl.
+Theme follows the app: it keys off <html data-theme="system|light|dark"> exactly like app.css does.
+*/
+
+#splash {
+  color-scheme: light dark;
+  --portal-bg:      light-dark(#f6efe3, #0d0609);
+  --portal-bg-2:    light-dark(#fffaf0, #1f0a12);
+  /* Dark inks are much deeper than light ones: `screen` stacks five layers additively, so the same values that look
+     crimson under `multiply` would blow out to hot pink. */
+  --portal-ink-1:   light-dark(#b01b33, #4a0510);
+  --portal-ink-2:   light-dark(#8e1128, #300309);
+  --portal-ink-3:   light-dark(#63101f, #1e0207);
+  --portal-core:    light-dark(#f7efe2, #5a0a18);
+  --portal-halo:    light-dark(rgba(122,15,36,.35), rgba(255,255,255,.55));
+  --portal-card:    light-dark(rgba(255,253,248,.94), rgba(20,10,13,.88));
+  /* Chosen look: the crimson mark stays in both themes; in dark mode its circle gets a gold rim (see .tile). */
+  --portal-card-border: light-dark(rgba(42,17,23,.25), rgba(216,180,120,.75));
+  --portal-tile-ring:   light-dark(rgba(122,15,36,.0), rgba(216,180,120,.22));
+  --portal-gold:    light-dark(#a8832e, #d8b478);
+  --portal-crimson: #a81830;
+  --portal-accent:  light-dark(#7a0f24, #d8b478);
+  --portal-text:    light-dark(#2a1117, #f6eee2);
+  --portal-muted:   light-dark(#5a4640, #cdbbb0);
+  --portal-bad:     light-dark(#a01a2c, #ff8a96);
+  --portal-blend:   multiply;
+  --portal-rim:     var(--portal-bg);      /* feathers each blob into whatever sits behind it */
+  --bd-inset:       -16%;                  /* how far the backdrop disc extends past the swirl */
+  --ease: cubic-bezier(.2,.7,.2,1);
+  --portal-font: "Inter", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --portal-mono: "Geist Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+/* Same three-state rule app.css uses: an explicit choice wins, otherwise follow the OS. */
+:root[data-theme="light"] #splash { color-scheme: light; --portal-blend: multiply; }
+:root[data-theme="dark"]  #splash { color-scheme: dark;  --portal-blend: screen; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #splash { color-scheme: dark; --portal-blend: screen; }
+}
+
+/* ---------------------------------------------------------------- surface */
+#splash {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 1rem 2rem 1.2rem; overflow: hidden;
+  font: 400 13.5px/1.5 var(--portal-font); color: var(--portal-text);
+  background: radial-gradient(ellipse 80% 70% at 50% 42%, var(--portal-bg-2), var(--portal-bg) 72%);
+  user-select: none; cursor: default;
+  transition: opacity .55s var(--ease), visibility .55s;
+}
+#splash.leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+#splash[hidden] { display: none; }
+
+/* ------------------------------------------------------------------- disc */
+.disc { position: relative; width: min(330px, 62vw, 40vh); aspect-ratio: 1; flex: none; overflow: visible; isolation: isolate;
+  margin: .6rem 0 var(--disc-gap, 2.2rem); animation: portal-arrive .9s var(--ease) both; }
+#splash[data-backdrop="glass"], #splash[data-backdrop="hairline"] { --disc-gap: 3.6rem; }
+#splash[data-backdrop="aura"] { --disc-gap: 1.6rem; }
+@keyframes portal-arrive { from { transform: scale(.6); opacity: 0; filter: blur(8px); } }
+.orb { position: absolute; inset: 0; pointer-events: none; }
+.orb span { position: absolute; top: 50%; left: 50%; width: var(--size, 100%); aspect-ratio: 1;
+  border-radius: var(--r, 90% 95% 85% 105%); background: var(--ink); mix-blend-mode: var(--portal-blend);
+  box-shadow: inset 0 0 36px 14px var(--portal-rim), 0 0 10px 0 var(--portal-halo);
+  transform: translate(var(--x), var(--y));
+  animation: portal-drift var(--spin) linear infinite, portal-shimmer var(--spin) ease-in-out infinite alternate; }
+@keyframes portal-drift { to { transform: translate(var(--x), var(--y)) rotate(1turn); } }
+@keyframes portal-shimmer { from { filter: saturate(1) brightness(.96); } to { filter: saturate(1.12) brightness(1.08); } }
+
+.tile { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 40%; aspect-ratio: 1;
+  display: grid; place-items: center; padding: 0; border-radius: 50%;
+  background: var(--portal-card); border: 1px solid var(--portal-card-border);
+  box-shadow: 0 0 0 4px var(--portal-tile-ring), 0 8px 30px rgba(0,0,0,.4); cursor: pointer; color: inherit;
+  animation: portal-breathe 4.5s ease-in-out infinite; transition: box-shadow .3s, border-color .3s; }
+.tile:hover { border-color: var(--portal-text); box-shadow: 0 0 34px color-mix(in srgb, var(--portal-accent) 60%, transparent); }
+.tile:focus-visible { outline: 2px solid var(--portal-accent); outline-offset: 3px; }
+.tile img { width: 72%; height: auto; display: block; transition: transform .5s var(--ease); }
+.tile:hover img { transform: rotate(-12deg) scale(1.12); }
+@keyframes portal-breathe { 0%, 100% { scale: .97; } 50% { scale: 1.03; } }
+
+/* --------------------------------------------------------------- backdrops
+   Four options, chosen with <div id="splash" data-backdrop="...">. The disc has isolation:isolate, so the blobs'
+   blend mode composites against this layer (z-index:-1 puts it under .orb and .tile). --portal-rim is set per
+   variant to match the layer's colour so the blobs' feathered edges dissolve into it instead of showing a halo. */
+.disc::before, .disc::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+.disc::before { inset: var(--bd-inset); z-index: -1; }
+.disc::after  { z-index: -1; }
+
+/* A. Eclipse: a solid disc with a lit crimson rim. Strongest contrast, the swirl looks inside a lens. */
+#splash[data-backdrop="eclipse"] { --bd-inset: -17%; --portal-rim: light-dark(#f0e2cb, #1b0810); }
+#splash[data-backdrop="eclipse"] .disc::before {
+  background: radial-gradient(circle at 50% 42%, light-dark(#fbf3e6, #2d0b15) 0, light-dark(#f0e2cb, #1b0810) 64%, light-dark(#e2cfb0, #0c0407) 100%);
+  box-shadow: 0 0 0 1px light-dark(rgba(122,15,36,.35), rgba(216,180,120,.28)),
+              0 0 60px 4px light-dark(rgba(176,27,51,.28), rgba(176,27,51,.45)),
+              inset 0 0 40px light-dark(rgba(122,15,36,.18), rgba(0,0,0,.6)); }
+
+/* B. Aura: no edge at all. A feathered crimson glow that fades into the page; the softest, least "boxed in". */
+#splash[data-backdrop="aura"] { --bd-inset: -60%; }
+#splash[data-backdrop="aura"] .disc::before {
+  background: radial-gradient(closest-side, light-dark(rgba(176,27,51,.34), rgba(176,27,51,.5)) 0%,
+              light-dark(rgba(176,27,51,.16), rgba(120,16,34,.3)) 40%, transparent 72%);
+  animation: portal-pulse 6s ease-in-out infinite; }
+@keyframes portal-pulse { 0%, 100% { opacity: .85; transform: scale(.97); } 50% { opacity: 1; transform: scale(1.04); } }
+
+/* C. Glass: a frosted lens with a slow dashed orbit ring. Needs the soft glows behind it to have anything to blur. */
+#splash[data-backdrop="glass"]::before, #splash[data-backdrop="glass"]::after {
+  content: ""; position: absolute; width: 46vmin; aspect-ratio: 1; border-radius: 50%; filter: blur(46px); pointer-events: none; opacity: .55; }
+#splash[data-backdrop="glass"]::before { left: 18%; top: 14%; background: var(--portal-crimson); }
+#splash[data-backdrop="glass"]::after  { right: 16%; bottom: 10%; background: var(--portal-gold); opacity: .35; }
+#splash[data-backdrop="glass"] { --bd-inset: -18%; --portal-rim: light-dark(rgba(246,239,227,.5), rgba(30,12,18,.55)); }
+#splash[data-backdrop="glass"] .disc::before {
+  background: linear-gradient(150deg, light-dark(rgba(255,255,255,.62), rgba(255,255,255,.12)), light-dark(rgba(255,255,255,.22), rgba(255,255,255,.03)));
+  border: 1px solid light-dark(rgba(122,15,36,.28), rgba(255,255,255,.26));
+  backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.3)), 0 30px 60px -24px rgba(0,0,0,.55); }
+#splash[data-backdrop="glass"] .disc::after {
+  inset: -32%; border: 1px dashed light-dark(rgba(122,15,36,.4), rgba(216,180,120,.45)); animation: portal-orbit 70s linear infinite; }
+@keyframes portal-orbit { to { transform: rotate(1turn); } }
+
+/* D. Hairline: a gold ring with a faint crimson fill and a comet that circles an outer ring. Quietest, most "badge". */
+#splash[data-backdrop="hairline"] { --bd-inset: -13%; --portal-rim: light-dark(#f2e6d2, #190910); }
+#splash[data-backdrop="hairline"] .disc::before {
+  background: radial-gradient(circle, light-dark(#f8efe0, #260b14) 0, light-dark(#f2e6d2, #190910) 70%);
+  border: 1px solid color-mix(in srgb, var(--portal-gold) 75%, transparent);
+  box-shadow: 0 0 0 7px light-dark(rgba(168,131,46,.08), rgba(216,180,120,.06)), 0 0 44px light-dark(rgba(176,27,51,.18), rgba(176,27,51,.32)); }
+#splash[data-backdrop="hairline"] .disc::after {
+  inset: -30%; border: 1px solid color-mix(in srgb, var(--portal-gold) 22%, transparent);
+  background: conic-gradient(from 0deg, transparent 0 78%, var(--portal-gold) 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+  animation: portal-orbit 7s linear infinite; }
+
+/* ------------------------------------------------------------------- text */
+.name { margin: 1.1rem 0 0; font-size: 1.8rem; font-weight: 750; letter-spacing: -.02em; line-height: 1.1; text-align: center; }
+.sub { margin: .15rem 0 0; font: 600 .7rem var(--portal-mono); letter-spacing: .24em; text-transform: uppercase; color: var(--portal-muted); text-align: center; }
+.trail { margin-top: .9rem; min-height: 3.4em; display: grid; align-content: end; justify-items: center; gap: .05rem;
+  font: 400 .7rem/1.5 var(--portal-mono); letter-spacing: .03em; color: var(--portal-muted); text-align: center; }
+.trail div:nth-last-child(n+1) { opacity: .8; } .trail div:nth-last-child(n+2) { opacity: .55; } .trail div:nth-last-child(n+3) { opacity: .3; }
+.now { margin-top: .3rem; display: flex; justify-content: center; gap: .8rem; align-items: baseline; font: 600 .78rem var(--portal-mono); letter-spacing: .05em; text-align: center; }
+.now #pct { color: var(--portal-muted); min-width: 3ch; text-align: left; }
+.bar { margin-top: .7rem; width: min(300px, 70vw); height: 3px; border-radius: 2px; background: color-mix(in srgb, var(--portal-text) 18%, transparent); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--portal-accent); box-shadow: 0 0 10px var(--portal-accent); transition: width .45s var(--ease); }
+.legal { margin: .9rem 0 0; font-size: .66rem; line-height: 1.5; color: var(--portal-muted); text-align: center; }
+.err { margin-top: .6rem; color: var(--portal-bad); font-size: .8rem; text-align: center; }
+.err button { font: inherit; font-weight: 600; margin-left: .4rem; padding: .15rem .6rem; border-radius: .4rem; cursor: pointer; }
+.skip { position: absolute; right: 1rem; bottom: 1rem; font: 600 .7rem var(--portal-mono); letter-spacing: .08em; color: var(--portal-muted);
+  background: none; border: 1px solid color-mix(in srgb, var(--portal-text) 22%, transparent); border-radius: 999px; padding: .3rem .8rem; cursor: pointer; }
+.skip:hover { color: var(--portal-text); border-color: var(--portal-text); }
+@media (prefers-reduced-motion: reduce) {
+  .orb span, .tile, .disc, .disc::before, .disc::after { animation: none !important; }
+  #splash { transition: none; }
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+SPDX-License-Identifier: AGPL-3.0-or-later
+Copyright (C) 2026 Mehedi Maruf. Licence contact: license@mehedimaruf.com
+Can't reach license@mehedimaruf.com?
+The domain probably expired because HE's TOO BROKE TO RENEW IT.
+Please don't take it personally. Try blessedevil@duck.com or mehedimaruf@duck.com instead,
+and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
+Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
+
+Design preview only (not shipped). Serve the repo root over http and open /design/backdrops.html, e.g.
+    python -m http.server 8751
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal backdrop options</title>
+<style>
+  :root { color-scheme: dark; --bg:#0b0a0c; --card:#15121a; --line:#2a2530; --text:#efe6da; --muted:#a69a90; --gold:#d8b478; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 ui-sans-serif, system-ui, "Segoe UI", sans-serif; }
+  header { max-width: 1180px; margin: 0 auto; padding: 22px 20px 6px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between; }
+  h1 { margin: 0; font-size: 20px; letter-spacing: -.01em; }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .seg button { background: none; border: 0; color: var(--muted); font: inherit; padding: 6px 16px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--gold); color: #1a1208; font-weight: 600; }
+  main { max-width: 1180px; margin: 0 auto; padding: 14px 20px 36px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 640px) { main { grid-template-columns: 1fr; } }
+  figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  iframe { display: block; width: 100%; height: 520px; border: 0; background: #000; }
+  figcaption { padding: 12px 16px 14px; border-top: 1px solid var(--line); }
+  figcaption b { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--gold); color: #1a1208; font-size: 12px; margin-right: 8px; }
+  figcaption strong { font-size: 15px; }
+  figcaption span { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Portal backdrop options</h1>
+    <p>Four ways to sit the swirl and crimson mark on a web page. Each one is live; switch the theme to compare.</p>
+  </div>
+  <div class="seg" id="theme" role="group" aria-label="Preview theme">
+    <button data-t="dark" aria-pressed="true">Dark</button>
+    <button data-t="light" aria-pressed="false">Light</button>
+  </div>
+</header>
+<main id="grid"></main>
+<script>
+  const OPTIONS = [
+    { id: "eclipse",  name: "Eclipse",  note: "A solid disc with a lit crimson rim. Strongest contrast: the swirl reads as sitting inside a lens." },
+    { id: "aura",     name: "Aura",     note: "No edge at all. A soft crimson glow that fades into the page. The lightest, least boxed-in look." },
+    { id: "glass",    name: "Glass",    note: "A frosted lens over soft colour glows, with a slow dashed orbit ring. Modern, a little more going on." },
+    { id: "hairline", name: "Hairline", note: "A gold ring around a dark disc, with a comet circling an outer ring. Quiet and badge-like." },
+  ];
+  const grid = document.getElementById("grid");
+  let theme = "dark";
+  function render() {
+    grid.replaceChildren();
+    OPTIONS.forEach((o, i) => {
+      const f = document.createElement("figure");
+      f.innerHTML = `<iframe title="${o.name}" src="backdrop-frame.html?b=${o.id}&t=${theme}"></iframe>
+        <figcaption><b>${"ABCD"[i]}</b><strong>${o.name}</strong><span>${o.note}</span></figcaption>`;
+      grid.append(f);
+    });
+  }
+  document.getElementById("theme").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    theme = b.dataset.t;
+    document.querySelectorAll("#theme button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    render();
+  });
+  render();
+</script>
+</body>
+</html>

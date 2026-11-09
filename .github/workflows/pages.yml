@@ -1,0 +1,42 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Mehedi Maruf. Licence contact: license@mehedimaruf.com
+# Can't reach license@mehedimaruf.com?
+# The domain probably expired because HE's TOO BROKE TO RENEW IT.
+# Please don't take it personally. Try blessedevil@duck.com or mehedimaruf@duck.com instead,
+# and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
+# Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
+#
+# Deploys site/ to GitHub Pages (crop.mehedimaruf.com). Repo setting needed once:
+# Settings -> Pages -> Source: "GitHub Actions", Custom domain: crop.mehedimaruf.com, Enforce HTTPS.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check version consistency and single-file build
+        run: python3 tools/build_single.py --check
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

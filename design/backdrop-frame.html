@@ -1,0 +1,60 @@
+<!doctype html>
+<!--
+SPDX-License-Identifier: AGPL-3.0-or-later
+Copyright (C) 2026 Mehedi Maruf. Licence contact: license@mehedimaruf.com
+Can't reach license@mehedimaruf.com?
+The domain probably expired because HE's TOO BROKE TO RENEW IT.
+Please don't take it personally. Try blessedevil@duck.com or mehedimaruf@duck.com instead,
+and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
+Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
+
+Design preview only (not shipped): one live portal splash, configured by ?b=<backdrop>&t=<theme>.
+Loaded in an iframe grid by backdrops.html.
+-->
+<html lang="en" data-theme="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backdrop frame</title>
+<link rel="stylesheet" href="../site/css/portal.css">
+<style>html, body { margin: 0; height: 100%; }</style>
+</head>
+<body>
+  <main id="splash" role="status" aria-live="polite">
+    <div class="disc" aria-hidden="true">
+      <div class="orb">
+        <span style="--x:-53%;--y:-53%;--spin:5.55s;--ink:var(--portal-ink-1);--r:90% 95% 85% 105%"></span>
+        <span style="--x:-47%;--y:-52%;--spin:8.7s;--ink:var(--portal-ink-2);--r:105% 82% 98% 88%"></span>
+        <span style="--x:-45%;--y:-50%;--spin:6.9s;--size:58%;--ink:var(--portal-core);--r:86% 108% 92% 96%"></span>
+        <span style="--x:-53%;--y:-45%;--spin:10.8s;--ink:var(--portal-ink-3);--r:98% 88% 106% 84%"></span>
+        <span style="--x:-55%;--y:-45%;--spin:9.3s;--ink:var(--portal-ink-2);--r:92% 100% 82% 110%"></span>
+      </div>
+      <button class="tile" id="tile" type="button" aria-label="Change theme"><img src="../site/assets/mark-light.png" data-light="../site/assets/mark-light.png" data-gold="assets/mark-gold.png" alt=""></button>
+    </div>
+    <h1 class="name">SliceDevil</h1>
+    <p class="sub">by BlessedDevil</p>
+    <div class="trail" id="trail" aria-hidden="true"></div>
+    <div class="now"><span id="step">Starting…</span><span id="pct">0%</span></div>
+    <div class="bar"><i id="fill"></i></div>
+    <p class="legal">&copy; 2026 Mehedi Maruf<br>Licensed AGPL-3.0-or-later</p>
+  </main>
+  <script src="../site/js/portal.js"></script>
+  <script>
+    const q = new URLSearchParams(location.search);
+    document.getElementById("splash").dataset.backdrop = q.get("b") || "eclipse";
+    document.documentElement.dataset.theme = q.get("t") || "system";
+    // ?m=crimson keeps the full-colour mark in dark mode (no gold swap); ?tile= restyles the circle behind it.
+    const s = document.getElementById("splash"), img = document.querySelector("#tile img");
+    if (q.get("m") === "crimson") { delete img.dataset.gold; img.src = img.dataset.light; }
+    const tile = q.get("tile");
+    if (tile === "cream") { s.style.setProperty("--portal-card", "rgba(250,240,224,.97)"); s.style.setProperty("--portal-card-border", "rgba(216,180,120,.7)"); }
+    if (tile === "ring")  { s.style.setProperty("--portal-card-border", "rgba(216,180,120,.75)"); document.getElementById("tile").style.boxShadow = "0 0 0 4px rgba(216,180,120,.22), 0 8px 30px rgba(0,0,0,.45)"; }
+    const demo = () => Portal.run([
+      { label: "Warming up…", lines: ["Warming up…", "Waking the encoders…"], run: async () => {} },
+      { label: "Checking formats…", lines: ["Checking formats…", "PNG · WebP · JPEG · ICO · SVG"], run: async () => {} },
+      { label: "Ready", lines: ["Ready"] },
+    ], { pace: 400, onDone: () => new Promise((r) => setTimeout(() => { demo(); r(); }, 1800)) });
+    demo();
+  </script>
+</body>
+</html>
